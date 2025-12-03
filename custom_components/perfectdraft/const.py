@@ -1,2 +1,0 @@
-DOMAIN = "perfectdraft"
-PLATFORMS = ["sensor"]

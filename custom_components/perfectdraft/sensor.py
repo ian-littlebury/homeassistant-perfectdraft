@@ -1,59 +1,48 @@
-import logging
-from homeassistant.helpers.entity import Entity
-from .api import PerfectDraftAPI
-from .const import DOMAIN
+from __future__ import annotations
 
-_LOGGER = logging.getLogger(__name__)
+from typing import Any
 
-async def async_setup_entry(hass, config_entry, async_add_entities):
-    """Set up the PerfectDraft sensors."""
-    email = config_entry.data.get("email")
-    password = config_entry.data.get("password")
-    x_api_key = config_entry.data.get("x_api_key")
-    recaptcha_token = config_entry.data.get("recaptcha_token")
+from homeassistant.components.sensor import SensorEntity
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-    api = PerfectDraftAPI(email, password, x_api_key, recaptcha_token)
-    api.authenticate()
-    status = api.get_status()
-    machine_id = status['machine_id']
-    machine_details = api.get_machine_details(machine_id)
+from . import DOMAIN
 
-    sensors = [
-        PerfectDraftSensor(api, "Temperature", machine_details['temperature']),
-        PerfectDraftSensor(api, "Pressure", machine_details['pressure']),
-        PerfectDraftSensor(api, "Door Status", machine_details['door_status'])
-    ]
 
-    async_add_entities(sensors, True)
+async def async_setup_entry(
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
+    """Set up PerfectDraft sensors from a config entry."""
+    data: dict[str, Any] = hass.data[DOMAIN][entry.entry_id]
+    email = data.get("email", "unknown")
 
-class PerfectDraftSensor(Entity):
-    def __init__(self, api, name, state):
-        self._api = api
-        self._name = name
-        self._state = state
+    # For now we expose a single dummy sensor just to show the wiring works
+    async_add_entities(
+        [
+            PerfectDraftDummySensor(
+                entry_id=entry.entry_id,
+                email=email,
+            )
+        ],
+        update_before_add=True,
+    )
+
+
+class PerfectDraftDummySensor(SensorEntity):
+    """A dummy sensor representing a PerfectDraft machine."""
+
+    _attr_has_entity_name = True
+
+    def __init__(self, entry_id: str, email: str) -> None:
+        self._attr_unique_id = f"perfectdraft_{entry_id}_dummy"
+        self._attr_name = "PerfectDraft Dummy Status"
+        self._email = email
+        self._attr_native_unit_of_measurement = None
 
     @property
-    def name(self):
-        return self._name
-
-    @property
-    def state(self):
-        return self._state
-
-    async def async_update(self):
-        """Fetch new state data for the sensor."""
-        # Re-authenticate if necessary
-        if not self._api.access_token:
-            self._api.authenticate()
-        
-        # Fetch the latest machine details
-        status = self._api.get_status()
-        machine_id = status['machine_id']
-        machine_details = self._api.get_machine_details(machine_id)
-
-        if self._name == "Temperature":
-            self._state = machine_details['temperature']
-        elif self._name == "Pressure":
-            self._state = machine_details['pressure']
-        elif self._name == "Door Status":
-            self._state = machine_details['door_status']
+    def native_value(self) -> str:
+        # Just returns a static string for now
+        return f"Configured for {self._email}"

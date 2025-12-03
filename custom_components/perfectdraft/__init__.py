@@ -1,30 +1,25 @@
-import logging
-from homeassistant.helpers import discovery
-from .const import DOMAIN, PLATFORMS
+from __future__ import annotations
 
-_LOGGER = logging.getLogger(__name__)
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
 
-async def async_setup(hass, config):
-    """Set up the PerfectDraft component."""
-    return True
+DOMAIN = "perfectdraft"
 
-async def async_setup_entry(hass, config_entry):
+PLATFORMS: list[str] = ["sensor"]
+
+
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up PerfectDraft from a config entry."""
     hass.data.setdefault(DOMAIN, {})
-    hass.data[DOMAIN][config_entry.entry_id] = config_entry.data
+    hass.data[DOMAIN][entry.entry_id] = entry.data
 
-    for platform in PLATFORMS:
-        hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(config_entry, platform)
-        )
-
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
 
-async def async_unload_entry(hass, config_entry):
+
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
-    hass.data[DOMAIN].pop(config_entry.entry_id)
-
-    for platform in PLATFORMS:
-        await hass.config_entries.async_forward_entry_unload(config_entry, platform)
-
-    return True
+    unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+    if unload_ok:
+        hass.data.get(DOMAIN, {}).pop(entry.entry_id, None)
+    return unload_ok

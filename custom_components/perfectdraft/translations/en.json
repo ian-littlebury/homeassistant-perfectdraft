@@ -2,26 +2,14 @@
   "config": {
     "step": {
       "user": {
-        "title": "Set up PerfectDraft",
-        "description": "Please enter your PerfectDraft credentials and API information.",
+        "title": "PerfectDraft",
+        "description": "Configure your PerfectDraft connection.",
         "data": {
-          "email": "Email",
+          "email": "Email address",
           "password": "Password",
-          "x_api_key": "API Key",
-          "recaptcha_token": "reCAPTCHA Token"
-        }
-      }
-    }
-  },
-  "options": {
-    "step": {
-      "init": {
-        "title": "Modify PerfectDraft settings",
-        "data": {
-          "email": "Email",
-          "password": "Password",
-          "x_api_key": "API Key",
-          "recaptcha_token": "reCAPTCHA Token"
+          "api_key": "API key",
+          "recaptcha_site_key": "reCAPTCHA site key",
+          "recaptcha_token": "reCAPTCHA token"
         }
       }
     }
