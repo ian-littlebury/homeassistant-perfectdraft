@@ -1,10 +1,15 @@
 {
   "domain": "perfectdraft",
   "name": "PerfectDraft",
-  "version": "1.0",
-  "documentation": "https://github.com/matthewcky2k/homeassistant-perfectdraft",
+  "version": "0.1.0",
+  "documentation": "https://github.com/ian-littlebury/homeassistant-perfectdraft",
+  "issue_tracker": "https://github.com/ian-littlebury/homeassistant-perfectdraft/issues",
   "dependencies": [],
-  "codeowners": ["@matthewcky2k"],
-  "requirements": ["requests", "beautifulsoup4"],
-  "config_flow": true
+  "codeowners": ["@ian-littlebury"],
+  "requirements": [],
+  "config_flow": true,
+  "single_config_entry": true,
+  "integration_type": "hub",
+  "iot_class": "cloud_polling",
+  "loggers": ["custom_components.perfectdraft"]
 }
