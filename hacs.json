@@ -1,15 +1,7 @@
 {
   "name": "PerfectDraft",
-  "content_in_root": true,
-  "domains": ["sensor"],
-  "homeassistant": "2023.10.0",
-  "render_readme": true,
-  "iot_class": "cloud_polling",
-  "country": "ANY",
-  "filename": "custom_components/perfectdraft",
-  "manifest": "custom_components/perfectdraft/manifest.json",
-  "zip_release": true,
-  "version": "1.0",
-  "upgradeable": true,
-  "hide_default_branch": false
+  "content_in_root": false,
+  "homeassistant": "2024.6.0",
+  "hacs": "1.33.0",
+  "render_readme": true
 }
